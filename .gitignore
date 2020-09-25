@@ -8,3 +8,4 @@ package-lock.json
 *.log
 *.out
 node_modules
+crab_project/src/CMakeLists.txt
