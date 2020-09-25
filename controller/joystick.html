@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <script src="node_modules/roslib/build/roslib.min.js"></script>
+    <script src="dist/hexapod.js"></script>
+    <script src="src/joystickController.js"></script>
+    <script>
+        // let controller = new JoystickController()
+        let pod = new hexapod.WalkingGaits()
+        let controller = new JoystickController(`ws://localhost:9090`, pod)
+    </script>
+    <style>
+        body {
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+</body>
+
+</html>

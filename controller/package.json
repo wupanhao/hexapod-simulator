@@ -1,0 +1,25 @@
+{
+  "name": "lepi-hexapod",
+  "version": "1.0.0",
+  "description": "hexapod driver for lepi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hexapod",
+    "robot"
+  ],
+  "author": "Panhao Wu",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "webpack": "^4.44.2"
+  },
+  "dependencies": {
+    "roslib": "^1.1.0"
+  }
+}

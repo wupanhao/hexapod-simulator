@@ -1,0 +1,10 @@
+build_isolated
+devel_isolated
+build
+devel
+install
+log
+package-lock.json
+*.log
+*.out
+node_modules

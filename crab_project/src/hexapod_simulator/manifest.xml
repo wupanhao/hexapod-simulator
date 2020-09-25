@@ -1,0 +1,8 @@
+<package>
+  <depend package="gazebo" />
+  <depend package="joint_state_publisher" />
+  <depend package="joint_state_publisher_gui" />
+  <depend package="robot_state_publisher" />
+  <author>me</author>
+  <license>BSD</license>
+</package>
