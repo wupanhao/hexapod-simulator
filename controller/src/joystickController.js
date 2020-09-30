@@ -17,11 +17,13 @@ class JoystickController {
 
     topic = null
 
+    joyTopic = null
+
     joint_names = ['coxa_joint_r1', 'femur_joint_r1', 'tibia_joint_r1', 'coxa_joint_r2', 'femur_joint_r2', 'tibia_joint_r2',
         'coxa_joint_r3', 'femur_joint_r3', 'tibia_joint_r3', 'coxa_joint_l1', 'femur_joint_l1', 'tibia_joint_l1',
         'coxa_joint_l2', 'femur_joint_l2', 'tibia_joint_l2', 'coxa_joint_l3', 'femur_joint_l3', 'tibia_joint_l3']
 
-    constructor(ros_url = null, walkingGaits = null) {
+    constructor(ros_url = null, walkingGaits = null, subJoyTopic = false) {
 
         if (!ros_url) {
             try {
@@ -56,43 +58,46 @@ class JoystickController {
                 messageType: 'sensor_msgs/JointState'
             });
 
-            let joyListener = new ROSLIB.Topic({
+            this.joyTopic = new ROSLIB.Topic({
                 ros: this.ros,
                 name: '/ubiquityrobot/joystick_node/joy_state',
                 messageType: 'std_msgs/String'
             });
-
-            joyListener.subscribe((message) => {
-                // console.log('Received message on ' + listener.name + ': ', message);
-                let joyStates = JSON.parse(message.data)
-                Object.assign(this.joy, joyStates)
-                if (joyStates && joyStates.Buttons[7] == 1) {
-                    if (this.startPress == true) {
-                        return
-                    } else {
-                        this.walkingGaits.toggleAnimating()
-                        this.startPress = true
-                    }
-                } else {
-                    this.startPress = false
-                }
-                if (joyStates && joyStates.Buttons[4] == 1) {
-                    if (this.resetPress == true) {
-                        return
-                    } else {
-                        this.walkingGaits.setState({ animationCount: 0 })
-                        this.walkingGaits.reset()
-                        this.resetPress = true
-                    }
-                } else if (this.resetPress == true) {
-                    this.resetPress = false
-                }
-            })
+            if (subJoyTopic) {
+                this.joyTopic.subscribe(this.onJoyMessage)
+            }
         })
 
         this.ros.on('error', (err) => {
             console.log(err)
         })
+    }
+
+    onJoyMessage(message) {
+        // console.log('Received message on ' + listener.name + ': ', message);
+        let joyStates = JSON.parse(message.data)
+        Object.assign(this.joy, joyStates)
+        if (joyStates && joyStates.Buttons[7] == 1) {
+            if (this.startPress == true) {
+                return
+            } else {
+                this.walkingGaits.toggleAnimating()
+                this.startPress = true
+            }
+        } else {
+            this.startPress = false
+        }
+        if (joyStates && joyStates.Buttons[4] == 1) {
+            if (this.resetPress == true) {
+                return
+            } else {
+                this.walkingGaits.setState({ animationCount: 0 })
+                this.walkingGaits.reset()
+                this.resetPress = true
+            }
+        } else if (this.resetPress == true) {
+            this.resetPress = false
+        }
     }
 
     pubServoMsg(angles) {
@@ -173,7 +178,9 @@ class JoystickController {
                 isForward = this.joy.Axes[3] < 0
                 hipSwing = parseInt(Math.abs(this.joy.Axes[3]) / 32767.0 * 20) + 5
                 if (hipSwing != this.walkingGaits.state.gaitParams.hipSwing) {
-                    this.walkingGaits.state.gaitParams.hipSwing = hipSwing
+                    const gaitParams = { ...this.walkingGaits.state.gaitParams, 'hipSwing': hipSwing }
+                    this.walkingGaits.setWalkSequence(gaitParams, this.walkingGaits.state.isTripodGait, inWalkMode)
+                    // this.walkingGaits.state.gaitParams.hipSwing = hipSwing
                 }
             }
         }

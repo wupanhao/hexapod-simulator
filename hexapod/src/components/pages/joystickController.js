@@ -101,7 +101,7 @@ class JoystickController {
                 name: this.joint_names,
                 position: angles.map(angle => angle / 180.0 * Math.PI)
             });
-            console.log('pubServoMsg', msg)
+            // console.log('pubServoMsg', msg)
             this.topic.publish(msg);
         }
     }
@@ -173,6 +173,8 @@ class JoystickController {
                 isForward = this.joy.Axes[3] < 0
                 hipSwing = parseInt(Math.abs(this.joy.Axes[3]) / 32767.0 * 20) + 5
                 if (hipSwing != this.walkingGaits.state.gaitParams.hipSwing) {
+                    const gaitParams = { ...this.walkingGaits.state.gaitParams, 'hipSwing': hipSwing }
+                    this.walkingGaits.setWalkSequence(gaitParams, this.walkingGaits.state.isTripodGait, inWalkMode)
                     this.walkingGaits.state.gaitParams.hipSwing = hipSwing
                 }
             }

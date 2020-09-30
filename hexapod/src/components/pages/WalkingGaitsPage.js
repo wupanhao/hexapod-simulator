@@ -50,7 +50,7 @@ class WalkingGaitsPage extends Component {
         this.props.onMount(this.pageName)
         const { isTripodGait, inWalkMode } = this.state
         this.setWalkSequence(DEFAULT_GAIT_PARAMS, isTripodGait, inWalkMode)
-        this.controller = new JoystickController(null, this)
+        this.controller = new JoystickController(`ws://192.168.50.10:9090`, this)
     }
 
     componentWillUnmount = () => {
