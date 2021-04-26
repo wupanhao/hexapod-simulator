@@ -11,3 +11,6 @@ node_modules
 controller/dist
 crab_project/src/CMakeLists.txt
 yarn.lock
+*.pyc
+__pycache__
+hardware_config.py
